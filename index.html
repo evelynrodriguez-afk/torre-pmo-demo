@@ -140,6 +140,7 @@ body {
   <button class="tcp-nav-item" data-view="hl7">HL7</button>
   <button class="tcp-nav-item" data-view="risks">Riesgos</button>
   <button class="tcp-nav-item" data-view="gov">Gobernanza</button>
+  <button class="tcp-nav-item" data-view="ia">🧠 Insights</button>
   <button class="tcp-nav-item" data-view="improve">Mejora</button>
 </div>
 
@@ -398,6 +399,75 @@ body {
   </div>
 </div>
 
+
+<div class="tcp-view" id="view-ia">
+
+  <div class="grid-4">
+    <div class="tcp-metric"><div class="tcp-metric-label">🎯 Salud predictiva</div><div class="tcp-metric-value" id="ia-salud">—</div><div class="tcp-metric-foot" id="ia-salud-foot" style="color: var(--color-text-secondary);">esperando análisis</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">🚀 Prob. go-live</div><div class="tcp-metric-value" id="ia-probabilidad">—</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">basado en tendencias</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">⚠️ Alertas detectadas</div><div class="tcp-metric-value" id="ia-alertas">—</div><div class="tcp-metric-foot" id="ia-alertas-foot" style="color: var(--color-text-secondary);">motor de 20 reglas</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">💡 Mitigaciones sugeridas</div><div class="tcp-metric-value" id="ia-mitigaciones">—</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">priorizadas por impacto</div></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px; background: linear-gradient(135deg, rgba(24,95,165,0.05), rgba(31,168,154,0.05));">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+      <div class="tcp-section-title" style="display: flex; align-items: center; gap: 8px; margin: 0;">
+        <span style="font-size: 18px;">🩺</span>
+        <span>Resumen ejecutivo del portafolio</span>
+      </div>
+      <button class="btn" style="font-size: 11px;" onclick="ejecutarAnalisis()">🔄 Actualizar análisis</button>
+    </div>
+    <div id="ia-resumen" style="font-size: 13px; line-height: 1.6; color: var(--color-text-primary); white-space: pre-wrap;">Click en "Actualizar análisis" para generar el resumen con base en los datos actuales.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="tcp-card">
+      <div class="tcp-section-title" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 18px;">🔬</span>
+        <span>Diagnóstico de causas raíz</span>
+      </div>
+      <div id="ia-diagnostico" style="font-size: 12px; line-height: 1.6;">Esperando análisis...</div>
+    </div>
+    <div class="tcp-card">
+      <div class="tcp-section-title" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 18px;">💡</span>
+        <span>Plan de mitigación priorizado</span>
+      </div>
+      <div id="ia-mitigacion" style="font-size: 12px; line-height: 1.6;">Esperando análisis...</div>
+    </div>
+  </div>
+
+  <div class="tcp-card" style="margin-top: 12px; margin-bottom: 12px;">
+    <div class="tcp-section-title" style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 18px;">🚨</span>
+      <span>Alertas detalladas del motor de reglas</span>
+    </div>
+    <div id="ia-alertas-lista" style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+      <div style="color: var(--color-text-secondary); font-style: italic;">Las alertas aparecerán al ejecutar el análisis.</div>
+    </div>
+  </div>
+
+  <div class="tcp-card" style="background: linear-gradient(135deg, rgba(239,111,94,0.08), rgba(245,199,96,0.08));">
+    <div class="tcp-section-title" style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 18px;">🧪</span>
+      <span>Simulador de escenarios · ¿Qué pasaría si...?</span>
+    </div>
+    <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">Selecciona un escenario predefinido para ver el impacto en cadena calculado por el motor.</div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;" id="simulador-botones">
+      <button class="btn" style="font-size: 11px; text-align: left;" onclick="simular('posponer_golive')">📅 Posponer go-live 4 semanas</button>
+      <button class="btn" style="font-size: 11px; text-align: left;" onclick="simular('reasignar_recursos')">👥 Reasignar 2 desarrolladores al core</button>
+      <button class="btn" style="font-size: 11px; text-align: left;" onclick="simular('contratar_arquitecto')">🔌 Contratar 2do arquitecto HL7</button>
+      <button class="btn" style="font-size: 11px; text-align: left;" onclick="simular('suspender_mejoras')">🎯 Suspender iniciativas de mejora</button>
+      <button class="btn" style="font-size: 11px; text-align: left;" onclick="simular('mvp_reporteria')">📊 Reducir alcance MVP reportería</button>
+      <button class="btn" style="font-size: 11px; text-align: left;" onclick="simular('paralelizar_uat')">⚡ Paralelizar UAT por módulos</button>
+    </div>
+
+    <div id="ia-respuesta-simulacion" style="display: none; margin-top: 16px; padding: 14px; background: var(--color-bg-primary); border-radius: 8px; border-left: 3px solid var(--color-text-info); font-size: 12px; line-height: 1.6;"></div>
+  </div>
+
+</div>
+
 <div class="tcp-view" id="view-improve">
   <div class="grid-3">
     <div class="tcp-metric"><div class="tcp-metric-label">Iniciativas activas</div><div class="tcp-metric-value">8</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">2 escalan al portafolio</div></div>
@@ -450,7 +520,7 @@ body {
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-const titles = { exec: 'Vista ejecutiva', portfolio: 'Portafolio de proyectos', core: 'Core HIS/EMR · detalle', hl7: 'Integración HL7 · monitoreo', risks: 'Gestión de riesgos', gov: 'Gobernanza y comités', improve: 'Mejora continua' };
+const titles = { exec: 'Vista ejecutiva', portfolio: 'Portafolio de proyectos', core: 'Core HIS/EMR · detalle', hl7: 'Integración HL7 · monitoreo', risks: 'Gestión de riesgos', gov: 'Gobernanza y comités', ia: '🧠 Insights · análisis predictivo', improve: 'Mejora continua' };
 const charts = {};
 
 function goView(v) {
@@ -575,6 +645,744 @@ function renderCharts(view) {
     });
   }
 }
+
+
+// =========================================================
+// CONEXIÓN A GOOGLE SHEETS
+// =========================================================
+// 1. Pega aquí la URL de tu API de Google Apps Script:
+const GOOGLE_SHEETS_API = ""; // ← Pega tu URL completa entre las comillas
+
+// Si dejas la URL vacía, la app usa los datos demo embebidos.
+// Si pones tu URL, intenta cargar datos reales y si falla usa los demo.
+
+async function cargarDatosReales() {
+  if (!GOOGLE_SHEETS_API) {
+    console.log("[Torre PMO] Modo demo: usando datos hardcodeados");
+    return null;
+  }
+  try {
+    const res = await fetch(GOOGLE_SHEETS_API);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    console.log("[Torre PMO] Datos cargados desde Google Sheets", data);
+    return data;
+  } catch (err) {
+    console.warn("[Torre PMO] No se pudo conectar a Google Sheets, usando datos demo:", err);
+    return null;
+  }
+}
+
+function aplicarDatos(data) {
+  if (!data) return;
+
+  // Actualizar KPIs ejecutivos
+  if (data.KPIs && data.KPIs.length) {
+    const kpiMap = {};
+    data.KPIs.forEach(k => kpiMap[k.codigo] = k);
+
+    const updateKPI = (selector, kpi) => {
+      const card = document.querySelector(selector);
+      if (!card || !kpi) return;
+      const valueEl = card.querySelector('.tcp-metric-value');
+      const footEl = card.querySelector('.tcp-metric-foot');
+      if (valueEl) {
+        valueEl.innerHTML = kpi.valor + (kpi.sufijo ? '<span style="font-size: 14px; color: var(--color-text-secondary);">' + kpi.sufijo + '</span>' : '');
+      }
+      if (footEl && kpi.tendencia) {
+        footEl.textContent = kpi.tendencia;
+        footEl.style.color = kpi.color === 'ok' ? 'var(--color-text-success)' :
+                             kpi.color === 'warn' ? 'var(--color-text-warning)' :
+                             kpi.color === 'danger' ? 'var(--color-text-danger)' : '';
+      }
+    };
+
+    const cards = document.querySelectorAll('#view-exec .tcp-metric');
+    if (cards[0]) updateKPI('#view-exec .tcp-metric:nth-child(1)', kpiMap.salud_portafolio);
+    if (cards[1]) updateKPI('#view-exec .tcp-metric:nth-child(2)', kpiMap.avance_core);
+    if (cards[2]) updateKPI('#view-exec .tcp-metric:nth-child(3)', kpiMap.interfaces_hl7);
+    if (cards[3]) updateKPI('#view-exec .tcp-metric:nth-child(4)', kpiMap.riesgos_criticos);
+  }
+
+  // Actualizar tabla de Proyectos
+  if (data.Proyectos && data.Proyectos.length) {
+    const tabla = document.querySelector('#view-portfolio .tcp-card table tbody');
+    if (tabla) {
+      tabla.innerHTML = data.Proyectos.map(p => `
+        <tr>
+          <td>${p.nombre}</td>
+          <td>${p.tipo}</td>
+          <td>${p.avance}%</td>
+          <td><span class="tcp-pill tcp-pill-${p.salud}">${p.salud === 'ok' ? 'en plan' : p.salud === 'warn' ? 'en riesgo' : 'crítico'}</span></td>
+          <td>${p.go_live}</td>
+        </tr>`).join('');
+    }
+  }
+
+  // Actualizar tabla HL7
+  if (data.HL7 && data.HL7.length) {
+    const tabla = document.querySelector('#view-hl7 .tcp-card table tbody');
+    if (tabla) {
+      tabla.innerHTML = data.HL7.map(h => `
+        <tr>
+          <td>${h.sistema}</td>
+          <td>${h.tipo_mensaje}</td>
+          <td>${h.volumen_24h ? Number(h.volumen_24h).toLocaleString() : '0'}</td>
+          <td>${h.tasa_exito ? h.tasa_exito + '%' : '—'}</td>
+          <td><span class="tcp-pill tcp-pill-${h.estado}">${h.estado}</span></td>
+        </tr>`).join('');
+    }
+  }
+
+  // Actualizar tabla de Riesgos
+  if (data.Riesgos && data.Riesgos.length) {
+    const tablas = document.querySelectorAll('#view-risks .tcp-card table tbody');
+    if (tablas[0]) {
+      tablas[0].innerHTML = data.Riesgos.map(r => `
+        <tr>
+          <td>${r.id}</td>
+          <td>${r.riesgo}</td>
+          <td>${r.proyecto}</td>
+          <td>${r.owner}</td>
+          <td><span class="tcp-pill tcp-pill-${r.severidad}">${r.severidad === 'danger' ? 'alto' : 'medio'}</span></td>
+        </tr>`).join('');
+    }
+  }
+
+  // Mostrar timestamp de actualización
+  if (data._actualizado) {
+    const subTitle = document.querySelector('.header-sub');
+    if (subTitle) {
+      const fecha = new Date(data._actualizado).toLocaleString('es-PE');
+      subTitle.textContent = subTitle.textContent.split('·')[0] + '· actualizado: ' + fecha;
+    }
+  }
+}
+
+// Cargar datos al iniciar
+(async function() {
+  const data = await cargarDatosReales();
+  if (data) aplicarDatos(data);
+})();
+
+
+
+// =========================================================================
+// MOTOR DE REGLAS INTELIGENTES · 100% GRATUITO
+// =========================================================================
+
+const MOTOR_REGLAS = {
+
+  // -----------------------------------------------------------------------
+  // EVALUACIÓN: ejecuta las 20 reglas sobre los datos actuales
+  // -----------------------------------------------------------------------
+  evaluar: function(datos) {
+    const alertas = [];
+    const proyectos = datos.Proyectos || [];
+    const hl7 = datos.HL7 || [];
+    const equipo = datos.Equipo || [];
+    const riesgos = datos.Riesgos || [];
+    const hitos = datos.Hitos || [];
+    const kpis = datos.KPIs || [];
+
+    // ===== REGLAS CRÍTICAS =====
+
+    // R01: SPI degradante
+    proyectos.forEach(p => {
+      const avance = parseFloat(p.avance);
+      if (p.salud === 'danger' && avance < 60) {
+        alertas.push({
+          regla: 'R01', severidad: 'danger', categoria: 'cronograma',
+          titulo: `Cronograma crítico: ${p.nombre}`,
+          descripcion: `Avance ${avance}% con salud crítica. SPI estimado por debajo de 0.85.`,
+          contexto: { proyecto: p.nombre, avance: avance },
+          mitigaciones: ['fast_tracking', 'reasignar_recursos', 'reducir_alcance']
+        });
+      }
+    });
+
+    // R03: Interfaz HL7 caída
+    hl7.forEach(h => {
+      const tasa = parseFloat(h.tasa_exito);
+      if (!isNaN(tasa) && tasa < 95 && tasa > 0) {
+        alertas.push({
+          regla: 'R03', severidad: tasa < 90 ? 'danger' : 'warn', categoria: 'integracion',
+          titulo: `Interfaz HL7 degradada: ${h.sistema}`,
+          descripcion: `Tasa de éxito ${tasa}% (SLA 99.5%). Volumen ${Number(h.volumen_24h).toLocaleString()} mensajes/24h.`,
+          contexto: { sistema: h.sistema, tasa: tasa, volumen: h.volumen_24h },
+          mitigaciones: ['investigar_logs_hl7', 'plan_b_batch', 'escalar_vendor']
+        });
+      }
+    });
+
+    // R04: Recurso saturado único
+    equipo.forEach(r => {
+      const carga = parseFloat(r.carga);
+      const personas = parseFloat(r.personas);
+      if (!isNaN(carga) && carga > 115 && personas === 1) {
+        alertas.push({
+          regla: 'R04', severidad: carga > 120 ? 'danger' : 'warn', categoria: 'recursos',
+          titulo: `Cuello de botella: ${r.rol}`,
+          descripcion: `Único recurso al ${carga}% sostenido. Riesgo de fatiga, errores o indisponibilidad por enfermedad.`,
+          contexto: { rol: r.rol, carga: carga },
+          mitigaciones: ['contratar_backup', 'redistribuir_carga', 'externalizar']
+        });
+      }
+    });
+
+    // R05: Concentración de riesgos
+    const riesgosAltos = riesgos.filter(r => r.severidad === 'danger').length;
+    if (riesgosAltos >= 3) {
+      alertas.push({
+        regla: 'R05', severidad: 'danger', categoria: 'gobernanza',
+        titulo: `${riesgosAltos} riesgos altos abiertos simultáneamente`,
+        descripcion: `Carga de gestión elevada para el PMO. Verificar capacidad de respuesta y owners asignados.`,
+        contexto: { cantidad: riesgosAltos },
+        mitigaciones: ['comite_extraordinario', 'priorizar_top3', 'reforzar_pmo']
+      });
+    }
+
+    // ===== REGLAS DE DETECCIÓN TEMPRANA =====
+
+    // R07: Hito en riesgo
+    hitos.forEach(h => {
+      if (h.estado === 'danger' || h.estado === 'warn') {
+        alertas.push({
+          regla: 'R07', severidad: h.estado, categoria: 'hitos',
+          titulo: `Hito comprometido: ${h.nombre}`,
+          descripcion: `Fecha ${h.fecha}. Estado: ${h.estado === 'danger' ? 'crítico' : 'en riesgo'}.`,
+          contexto: { hito: h.nombre, fecha: h.fecha },
+          mitigaciones: ['comite_seguimiento', 'plan_recuperacion']
+        });
+      }
+    });
+
+    // R09: Fatiga del equipo
+    const fatigados = equipo.filter(r => parseFloat(r.carga) >= 100);
+    if (fatigados.length >= 2) {
+      alertas.push({
+        regla: 'R09', severidad: 'warn', categoria: 'recursos',
+        titulo: `${fatigados.length} roles con carga ≥100% sostenida`,
+        descripcion: `Patrón de sobrecarga. Riesgo de errores, rotación o burnout en próximas 4-6 semanas.`,
+        contexto: { cantidad: fatigados.length, roles: fatigados.map(r => r.rol) },
+        mitigaciones: ['nivelar_carga', 'contratar_temporal', 'reducir_alcance']
+      });
+    }
+
+    // R10: Adopción débil en módulo crítico
+    proyectos.filter(p => p.tipo === 'Estratégico').forEach(p => {
+      const avance = parseFloat(p.avance);
+      if (avance < 70 && avance > 30) {
+        alertas.push({
+          regla: 'R10', severidad: 'warn', categoria: 'estrategico',
+          titulo: `Proyecto estratégico rezagado: ${p.nombre}`,
+          descripcion: `Avance ${avance}% por debajo del umbral de salud (70%) para proyectos críticos.`,
+          contexto: { proyecto: p.nombre, avance: avance },
+          mitigaciones: ['reforzar_equipo', 'priorizar_modulos', 'gestion_cambio']
+        });
+      }
+    });
+
+    // R11: Dependencia técnica crítica
+    const erpHL7 = hl7.find(h => h.sistema && h.sistema.includes('ERP') && parseFloat(h.tasa_exito) < 95);
+    const proyectoCore = proyectos.find(p => p.tipo === 'Estratégico');
+    if (erpHL7 && proyectoCore && proyectoCore.salud !== 'ok') {
+      alertas.push({
+        regla: 'R11', severidad: 'danger', categoria: 'dependencias',
+        titulo: `Dependencia crítica: Core HIS bloqueado por ERP/HL7`,
+        descripcion: `La integración HL7 con ERP/Farmacia está degradada y el Core depende de su certificación. Doble riesgo en cadena.`,
+        contexto: { tasa_erp: erpHL7.tasa_exito },
+        mitigaciones: ['plan_b_bypass', 'escalar_arquitectura', 'roadmap_alterno']
+      });
+    }
+
+    // ===== REGLAS DE OPORTUNIDAD =====
+
+    // R13: Quick wins listos
+    proyectos.filter(p => p.tipo === 'Mejora' && parseFloat(p.avance) >= 90).forEach(p => {
+      alertas.push({
+        regla: 'R13', severidad: 'info', categoria: 'oportunidad',
+        titulo: `Quick win listo: ${p.nombre}`,
+        descripcion: `Iniciativa de mejora al ${p.avance}%. Acelerar cierre y comunicar éxito públicamente para momentum.`,
+        contexto: { proyecto: p.nombre, avance: p.avance },
+        mitigaciones: ['comunicar_exito', 'replicar_patron']
+      });
+    });
+
+    // R14: Sub-utilización
+    equipo.filter(r => parseFloat(r.carga) < 50).forEach(r => {
+      alertas.push({
+        regla: 'R14', severidad: 'info', categoria: 'oportunidad',
+        titulo: `Capacidad disponible: ${r.rol}`,
+        descripcion: `Carga ${r.carga}%. Recurso reasignable a proyectos en ruta crítica.`,
+        contexto: { rol: r.rol, carga: r.carga },
+        mitigaciones: ['reasignar_critica']
+      });
+    });
+
+    // ===== REGLAS ESTRATÉGICAS =====
+
+    // R18: Coincidencia go-live con alta demanda
+    proyectos.filter(p => p.tipo === 'Estratégico' && p.go_live).forEach(p => {
+      const fecha = String(p.go_live).toLowerCase();
+      if (fecha.includes('sep') || fecha.includes('oct') || fecha.includes('nov') || fecha.includes('dic')) {
+        alertas.push({
+          regla: 'R18', severidad: 'warn', categoria: 'estrategico',
+          titulo: `Go-live en temporada de alta demanda asistencial`,
+          descripcion: `${p.nombre} tiene go-live en ${p.go_live}, coincidiendo con pico de atención (sep-dic). Riesgo operacional adicional.`,
+          contexto: { proyecto: p.nombre, fecha: p.go_live },
+          mitigaciones: ['piloto_controlado', 'soporte_24x7', 'rollback_plan']
+        });
+      }
+    });
+
+    return alertas;
+  },
+
+  // -----------------------------------------------------------------------
+  // CATÁLOGO DE MITIGACIONES (banco de conocimiento)
+  // -----------------------------------------------------------------------
+  catalogoMitigaciones: {
+    fast_tracking: { titulo: 'Fast-tracking de fases', responsable: 'Gerente de proyecto', plazo: '1-2 semanas', costo: 'medio', impacto: 'Recupera 1-2 semanas paralelizando actividades secuenciales', tipo: 'estructural' },
+    reasignar_recursos: { titulo: 'Reasignar recursos de baja prioridad', responsable: 'PMO', plazo: '1 semana', costo: 'bajo', impacto: 'Acelera proyecto crítico sin costo adicional', tipo: 'quick_win' },
+    reducir_alcance: { titulo: 'Negociar reducción de alcance MVP', responsable: 'Sponsor + PMO', plazo: '2 semanas', costo: 'bajo', impacto: 'Reduce 15-25% del esfuerzo crítico', tipo: 'estructural' },
+    investigar_logs_hl7: { titulo: 'Investigación profunda de logs HL7', responsable: 'Arquitecto HL7 + DBA', plazo: '24-48 horas', costo: 'bajo', impacto: 'Identifica causa raíz para fix definitivo', tipo: 'quick_win' },
+    plan_b_batch: { titulo: 'Activar bypass batch nocturno', responsable: 'Líder TI', plazo: '24 horas', costo: 'bajo', impacto: 'Garantiza continuidad operativa mientras se resuelve la falla', tipo: 'contingencia' },
+    escalar_vendor: { titulo: 'Escalar incidencia al vendor del sistema legado', responsable: 'CIO', plazo: 'Inmediato', costo: 'bajo', impacto: 'Acelera resolución con soporte premium', tipo: 'quick_win' },
+    contratar_backup: { titulo: 'Contratar segundo recurso especializado', responsable: 'CIO + RRHH', plazo: '3-4 semanas', costo: 'alto', impacto: 'Elimina cuello de botella estructural ($25-40K)', tipo: 'estructural' },
+    redistribuir_carga: { titulo: 'Redistribuir carga del rol saturado', responsable: 'Gerente de proyecto', plazo: '1 semana', costo: 'bajo', impacto: 'Alivio inmediato sin contratación', tipo: 'quick_win' },
+    externalizar: { titulo: 'Externalizar componente con consultor experto', responsable: 'PMO', plazo: '2 semanas', costo: 'medio', impacto: 'Trae experticia inmediata por 4-8 semanas', tipo: 'estructural' },
+    comite_extraordinario: { titulo: 'Convocar comité directivo extraordinario', responsable: 'Director PMO', plazo: '48 horas', costo: 'bajo', impacto: 'Decisiones de alto nivel sin esperar ciclo regular', tipo: 'quick_win' },
+    priorizar_top3: { titulo: 'Priorizar top 3 riesgos altos', responsable: 'PMO', plazo: '1 semana', costo: 'bajo', impacto: 'Concentra capacidad de respuesta donde más duele', tipo: 'quick_win' },
+    reforzar_pmo: { titulo: 'Reforzar capacidad del PMO', responsable: 'CFO + CMO', plazo: '4 semanas', costo: 'medio', impacto: 'Sostiene gobernanza durante fases críticas', tipo: 'estructural' },
+    comite_seguimiento: { titulo: 'Comité de seguimiento semanal del hito', responsable: 'PMO', plazo: 'Inmediato', costo: 'bajo', impacto: 'Mayor visibilidad y respuesta temprana', tipo: 'quick_win' },
+    plan_recuperacion: { titulo: 'Plan formal de recuperación del hito', responsable: 'Gerente de proyecto', plazo: '2 semanas', costo: 'medio', impacto: 'Hoja de ruta clara para retomar la fecha', tipo: 'estructural' },
+    nivelar_carga: { titulo: 'Nivelación de carga del equipo', responsable: 'PMO', plazo: '2 semanas', costo: 'bajo', impacto: 'Reduce burnout y mejora calidad', tipo: 'quick_win' },
+    contratar_temporal: { titulo: 'Contratar consultores temporales', responsable: 'CIO + RRHH', plazo: '3-4 semanas', costo: 'medio', impacto: 'Alivia carga durante pico ($15-30K)', tipo: 'estructural' },
+    reforzar_equipo: { titulo: 'Reforzar equipo del proyecto crítico', responsable: 'PMO + CIO', plazo: '3 semanas', costo: 'medio', impacto: 'Acelera ejecución del proyecto rezagado', tipo: 'estructural' },
+    priorizar_modulos: { titulo: 'Repriorizar módulos por valor', responsable: 'Líder clínico + PMO', plazo: '2 semanas', costo: 'bajo', impacto: 'Asegura entrega de lo crítico para go-live', tipo: 'quick_win' },
+    gestion_cambio: { titulo: 'Programa intensivo de gestión del cambio', responsable: 'Líder clínico', plazo: '6-8 semanas', costo: 'medio', impacto: 'Mejora adopción 30-40%', tipo: 'estructural' },
+    plan_b_bypass: { titulo: 'Plan B de bypass de integración', responsable: 'Arquitecto HL7', plazo: '2 semanas', costo: 'medio', impacto: 'Permite go-live aunque la integración tenga issues residuales', tipo: 'contingencia' },
+    escalar_arquitectura: { titulo: 'Revisión de arquitectura de integración', responsable: 'Arquitecto HL7 + CIO', plazo: '3 semanas', costo: 'medio', impacto: 'Identifica fixes estructurales no obvios', tipo: 'estructural' },
+    roadmap_alterno: { titulo: 'Roadmap alternativo de migración', responsable: 'PMO + Arquitecto', plazo: '4 semanas', costo: 'medio', impacto: 'Plan B si integración no certifica a tiempo', tipo: 'contingencia' },
+    comunicar_exito: { titulo: 'Comunicación pública del éxito', responsable: 'PMO + Comunicaciones', plazo: '1 semana', costo: 'bajo', impacto: 'Genera momentum y credibilidad del programa', tipo: 'quick_win' },
+    replicar_patron: { titulo: 'Replicar patrón en otras áreas', responsable: 'PMO', plazo: '4 semanas', costo: 'bajo', impacto: 'Escala el éxito a más procesos', tipo: 'estructural' },
+    reasignar_critica: { titulo: 'Reasignar a ruta crítica', responsable: 'PMO', plazo: '1 semana', costo: 'bajo', impacto: 'Acelera proyectos críticos sin costo adicional', tipo: 'quick_win' },
+    piloto_controlado: { titulo: 'Piloto controlado en 1-2 servicios', responsable: 'PMO + Líder clínico', plazo: '4-6 semanas', costo: 'medio', impacto: 'Reduce riesgo de big-bang en alta demanda', tipo: 'estructural' },
+    soporte_24x7: { titulo: 'Plan de soporte 24x7 post go-live', responsable: 'CIO', plazo: '2 semanas', costo: 'medio', impacto: 'Mitiga impacto de issues durante alta demanda', tipo: 'estructural' },
+    rollback_plan: { titulo: 'Plan formal de rollback', responsable: 'Arquitecto HL7 + CIO', plazo: '3 semanas', costo: 'bajo', impacto: 'Reduce riesgo de fallo catastrófico en go-live', tipo: 'contingencia' }
+  },
+
+  // -----------------------------------------------------------------------
+  // CALCULAR SALUD PREDICTIVA
+  // -----------------------------------------------------------------------
+  calcularSalud: function(alertas, datos) {
+    let score = 100;
+    alertas.forEach(a => {
+      if (a.severidad === 'danger') score -= 8;
+      else if (a.severidad === 'warn') score -= 3;
+    });
+
+    const proyectosCriticos = (datos.Proyectos || []).filter(p => p.tipo === 'Estratégico' && p.salud === 'danger');
+    score -= proyectosCriticos.length * 10;
+
+    score = Math.max(0, Math.min(100, score));
+    let color = 'ok';
+    if (score < 60) color = 'danger';
+    else if (score < 80) color = 'warn';
+
+    const probGoLive = Math.max(20, Math.min(95, score - 5));
+    return { score, color, probGoLive };
+  },
+
+  // -----------------------------------------------------------------------
+  // GENERAR RESUMEN EJECUTIVO
+  // -----------------------------------------------------------------------
+  generarResumen: function(alertas, datos, salud) {
+    const criticas = alertas.filter(a => a.severidad === 'danger');
+    const medias = alertas.filter(a => a.severidad === 'warn');
+    const oportunidades = alertas.filter(a => a.severidad === 'info');
+    const proyectosTotal = (datos.Proyectos || []).length;
+    const proyectosOk = (datos.Proyectos || []).filter(p => p.salud === 'ok').length;
+
+    const estado = salud.color === 'ok' ? 'saludable y dentro de tolerancia' :
+                   salud.color === 'warn' ? 'en estado de atención que requiere intervención focalizada' :
+                   'en situación crítica que demanda decisiones inmediatas del comité directivo';
+
+    let texto = `📊 ESTADO GENERAL\n`;
+    texto += `El portafolio se encuentra ${estado} con un score predictivo de ${salud.score}/100. `;
+    texto += `De los ${proyectosTotal} proyectos activos, ${proyectosOk} avanzan según plan, `;
+    texto += `mientras ${proyectosTotal - proyectosOk} requieren atención. `;
+    texto += `La probabilidad estimada de cumplir el go-live institucional es ${salud.probGoLive}%.\n\n`;
+
+    if (criticas.length > 0) {
+      texto += `🚨 ATENCIONES URGENTES (esta semana)\n`;
+      criticas.slice(0, 3).forEach((a, i) => {
+        texto += `${i + 1}. ${a.titulo}\n`;
+      });
+      texto += `\n`;
+    }
+
+    if (medias.length > 0) {
+      texto += `⚠️ RIESGOS EMERGENTES\n`;
+      texto += `Se detectaron ${medias.length} señales tempranas que pueden volverse críticas si no se mitigan en las próximas 2-4 semanas. `;
+      const categorias = [...new Set(medias.map(m => m.categoria))];
+      texto += `Categorías afectadas: ${categorias.join(', ')}.\n\n`;
+    }
+
+    if (oportunidades.length > 0) {
+      texto += `💡 OPORTUNIDADES DETECTADAS\n`;
+      texto += `${oportunidades.length} oportunidades identificadas: `;
+      oportunidades.slice(0, 2).forEach((a, i) => {
+        texto += `${a.titulo}${i < Math.min(1, oportunidades.length - 1) ? '; ' : '. '}`;
+      });
+      texto += `\n\n`;
+    }
+
+    texto += `🎯 RECOMENDACIONES PRIORIZADAS\n`;
+    texto += `Considerando el balance riesgo-impacto-esfuerzo, el comité directivo debería enfocar las próximas 2 semanas en: `;
+    texto += `(1) resolver los ${criticas.length} ítems críticos identificados, `;
+    texto += `(2) activar planes de contingencia en interfaces HL7 degradadas, `;
+    texto += `(3) capitalizar los quick wins disponibles para sostener el momentum del programa.`;
+
+    return texto;
+  },
+
+  // -----------------------------------------------------------------------
+  // GENERAR DIAGNÓSTICO
+  // -----------------------------------------------------------------------
+  generarDiagnostico: function(alertas, datos) {
+    if (alertas.length === 0) return 'Sin alertas activas. El portafolio opera dentro de parámetros normales.';
+
+    let texto = '';
+    const cadenas = this.identificarCadenasCausales(alertas, datos);
+
+    cadenas.forEach((cadena, i) => {
+      texto += `${i + 1}. ${cadena.titulo}\n`;
+      texto += `   Causa: ${cadena.causa}\n`;
+      texto += `   Síntoma: ${cadena.sintoma}\n`;
+      texto += `   Impacto: ${cadena.impacto}\n\n`;
+    });
+
+    return texto;
+  },
+
+  identificarCadenasCausales: function(alertas, datos) {
+    const cadenas = [];
+
+    // Cadena 1: HL7 caída → Core bloqueado
+    const hl7Caida = alertas.find(a => a.regla === 'R03');
+    const dependenciaCritica = alertas.find(a => a.regla === 'R11');
+    if (hl7Caida && dependenciaCritica) {
+      cadenas.push({
+        titulo: 'Cadena crítica: integración HL7 bloqueando el core',
+        causa: 'Inestabilidad en la interfaz HL7 con sistema legado',
+        sintoma: `Tasa de éxito por debajo del SLA (${hl7Caida.contexto.tasa}%) afectando flujo de datos`,
+        impacto: 'Sin certificación HL7, el core no puede pasar a UAT integral. Probable retraso del go-live de 3-5 semanas.'
+      });
+    }
+
+    // Cadena 2: Recurso saturado → todo bloqueado
+    const cuelloBotella = alertas.find(a => a.regla === 'R04');
+    if (cuelloBotella) {
+      cadenas.push({
+        titulo: `Cadena estructural: ${cuelloBotella.contexto.rol} como punto único de falla`,
+        causa: `Carga sostenida del ${cuelloBotella.contexto.carga}% en un solo recurso especializado`,
+        sintoma: 'Decisiones técnicas se acumulan, certificaciones se retrasan, calidad de entregables decae',
+        impacto: 'Riesgo de indisponibilidad por enfermedad o renuncia. Sin backup, el portafolio se detiene 2-4 semanas.'
+      });
+    }
+
+    // Cadena 3: Concentración de riesgos
+    const concentracion = alertas.find(a => a.regla === 'R05');
+    if (concentracion) {
+      cadenas.push({
+        titulo: 'Cadena de gobernanza: sobrecarga de gestión de riesgos',
+        causa: `${concentracion.contexto.cantidad} riesgos altos abiertos simultáneamente`,
+        sintoma: 'PMO debe priorizar capacidad de respuesta. Riesgos secundarios pueden volverse primarios.',
+        impacto: 'Si no se atienden top 3 esta semana, probabilidad de materialización combinada > 60%.'
+      });
+    }
+
+    // Cadena 4: Adopción débil + go-live cercano
+    const adopcionDebil = alertas.find(a => a.regla === 'R10');
+    const altaDemanda = alertas.find(a => a.regla === 'R18');
+    if (adopcionDebil && altaDemanda) {
+      cadenas.push({
+        titulo: 'Cadena estratégica: adopción inmadura + ventana de alta demanda',
+        causa: 'Avance del proyecto estratégico por debajo del umbral antes de temporada crítica',
+        sintoma: 'Equipos clínicos sin entrenamiento suficiente para go-live en pico operacional',
+        impacto: 'Riesgo alto de rechazo del sistema y rollback. Costo reputacional y financiero significativo.'
+      });
+    }
+
+    if (cadenas.length === 0 && alertas.length > 0) {
+      cadenas.push({
+        titulo: 'Diagnóstico general',
+        causa: `${alertas.length} alertas detectadas en categorías diversas`,
+        sintoma: 'Múltiples patrones de atención sin correlación dominante identificada',
+        impacto: 'Requiere atención focalizada por categoría según priorización del PMO.'
+      });
+    }
+
+    return cadenas;
+  },
+
+  // -----------------------------------------------------------------------
+  // GENERAR PLAN DE MITIGACIÓN
+  // -----------------------------------------------------------------------
+  generarMitigacion: function(alertas) {
+    if (alertas.length === 0) return 'No hay riesgos activos que requieran plan de mitigación.';
+
+    // Recolectar todas las mitigaciones únicas sugeridas
+    const mitigacionesIds = new Set();
+    alertas.forEach(a => {
+      if (a.mitigaciones) a.mitigaciones.forEach(m => mitigacionesIds.add(m));
+    });
+
+    // Convertir a array con metadata del catálogo
+    const mitigaciones = Array.from(mitigacionesIds)
+      .map(id => ({ id: id, ...this.catalogoMitigaciones[id] }))
+      .filter(m => m.titulo);
+
+    // Priorizar: quick_win primero, luego estructural, luego contingencia
+    const orden = { quick_win: 1, estructural: 2, contingencia: 3 };
+    mitigaciones.sort((a, b) => (orden[a.tipo] || 99) - (orden[b.tipo] || 99));
+
+    // Tomar top 5
+    const top5 = mitigaciones.slice(0, 5);
+
+    let texto = '';
+    top5.forEach((m, i) => {
+      const emoji = m.tipo === 'quick_win' ? '🚀' : m.tipo === 'estructural' ? '🏗️' : '🛡️';
+      const tipoTexto = m.tipo === 'quick_win' ? 'quick win' : m.tipo === 'estructural' ? 'estructural' : 'contingencia';
+      texto += `ACCIÓN ${i + 1}: ${m.titulo}\n`;
+      texto += `${emoji} Tipo: ${tipoTexto}\n`;
+      texto += `👤 Responsable: ${m.responsable}\n`;
+      texto += `⏰ Plazo: ${m.plazo}\n`;
+      texto += `💰 Costo: ${m.costo}\n`;
+      texto += `📈 Impacto: ${m.impacto}\n\n`;
+    });
+
+    return texto;
+  }
+};
+
+// =========================================================================
+// SIMULADOR DE ESCENARIOS
+// =========================================================================
+const SIMULADOR = {
+  posponer_golive: {
+    titulo: 'Posponer go-live 4 semanas',
+    impactoInmediato: 'Alivio significativo en cronograma. UAT puede ejecutarse con mayor profundidad. Equipos respiran.',
+    impactoMediano: 'Calidad esperada mejora 25-30%. Riesgo de errores en producción se reduce a la mitad. Capacitación clínica más completa.',
+    impactoGoLive: 'Nueva fecha cae en octubre/noviembre, dentro de temporada de alta demanda asistencial. Riesgo operacional adicional.',
+    tradeoffs: '✅ Ganas calidad y reduces riesgo técnico\n❌ Pierdes 4 semanas de ROI ($150-200K en costos operativos legados)\n❌ Coincides con pico de demanda',
+    probabilidadExito: '70% — alta probabilidad de éxito si se aprovecha el tiempo extra para piloto controlado',
+    recomendacion: '✅ RECOMENDADO bajo dos condiciones: (1) usar las 4 semanas para piloto en 2 servicios pequeños, no para más desarrollo, y (2) preparar plan de soporte 24x7 para el nuevo go-live. Sin estas condiciones, solo posterga el problema.'
+  },
+  reasignar_recursos: {
+    titulo: 'Reasignar 2 desarrolladores al core',
+    impactoInmediato: 'Aceleración inmediata del proyecto core en 15-20%. Módulos rezagados (prescripción, reportería) reciben capacidad adicional.',
+    impactoMediano: 'Recuperas ~2 semanas del retraso acumulado. Reportería avanzada queda postergada para fase 2.',
+    impactoGoLive: 'Probabilidad de cumplir 15 sep aumenta de 60% a 78%. Reportería MVP suficiente para go-live.',
+    tradeoffs: '✅ Costo $0, recuperación rápida del cronograma\n✅ No afecta proyectos críticos\n❌ Postergas funcionalidad de reportería avanzada\n❌ Posible insatisfacción del área de Calidad',
+    probabilidadExito: '85% — alta probabilidad si el sponsor del módulo de reportería acepta el MVP',
+    recomendacion: '✅ ALTAMENTE RECOMENDADO. Es la acción de mayor impacto-costo más bajo del portafolio. Requiere conversación previa con el área de Calidad para alinear expectativas del MVP.'
+  },
+  contratar_arquitecto: {
+    titulo: 'Contratar 2do arquitecto HL7',
+    impactoInmediato: 'Costo $25-40K trimestrales. Onboarding de 2-3 semanas antes de aportar.',
+    impactoMediano: 'Elimina cuello de botella estructural. Capacidad de integración aumenta 80%. Reduce riesgo de indisponibilidad por enfermedad/renuncia.',
+    impactoGoLive: 'Probabilidad de certificación HL7 con ERP al 18 jun aumenta de 45% a 80%. Asegura el path crítico del go-live.',
+    tradeoffs: '✅ Resuelve el riesgo más alto del portafolio\n✅ Mejora calidad del diseño técnico\n❌ Costo adicional $25-40K\n❌ 2-3 semanas de onboarding antes de aportar',
+    probabilidadExito: '90% — alta probabilidad si se contrata consultor externo experimentado (no recurso junior)',
+    recomendacion: '✅ DECISIÓN INELUDIBLE esta semana. El costo es marginal vs el costo de mover el go-live. Opción A: consultor externo experto (recomendada). Opción B: reasignar arquitecto interno de otro proyecto + temporal.'
+  },
+  suspender_mejoras: {
+    titulo: 'Suspender iniciativas de mejora continua',
+    impactoInmediato: 'Libera 20-25% de capacidad del equipo. Equipos se concentran 100% en core e integraciones.',
+    impactoMediano: 'Pierdes momentum cultural de mejora continua. Quick wins (triaje lean, seguridad paciente) quedan congelados.',
+    impactoGoLive: 'Probabilidad de cumplir aumenta solo 5-8%. La capacidad liberada es marginal porque el cuello de botella es el arquitecto HL7, no desarrolladores.',
+    tradeoffs: '✅ Foco total en lo crítico\n❌ Pérdida de quick wins ya en 90% de avance\n❌ Daño a la cultura de mejora continua\n❌ Costo reputacional con áreas operativas',
+    probabilidadExito: '40% — el beneficio es menor al daño organizacional',
+    recomendacion: '⚠️ NO RECOMENDADO. Solo suspender iniciativas que tengan menos de 50% de avance. Las que están al 80-92% deben cerrarse — el costo de cerrarlas es mínimo y el beneficio de comunicarlas es alto.'
+  },
+  mvp_reporteria: {
+    titulo: 'Reducir alcance MVP de reportería',
+    impactoInmediato: 'Libera ~25% de esfuerzo del módulo de reportería. Equipo se reasigna a prescripción y UAT.',
+    impactoMediano: 'Reportes regulatorios obligatorios se entregan en go-live. Reportes avanzados (BI, dashboards clínicos) se postergan 2-3 meses.',
+    impactoGoLive: 'Probabilidad de cumplir 15 sep aumenta de 60% a 75%. Cumplimiento normativo asegurado.',
+    tradeoffs: '✅ Foco en lo regulatoriamente crítico\n✅ Acelera cronograma sin sacrificar compliance\n❌ Insatisfacción inicial del área de Calidad\n❌ Requiere re-validar prioridades con stakeholders',
+    probabilidadExito: '80% — depende de alineación con sponsor del área de Calidad',
+    recomendacion: '✅ RECOMENDADO. Definir conjunto mínimo: solo reportes regulatorios de MINSA/aseguradoras + reportes operativos básicos. Diferir BI clínico avanzado a fase 2 (3 meses post go-live).'
+  },
+  paralelizar_uat: {
+    titulo: 'Paralelizar UAT por módulos',
+    impactoInmediato: 'Cambio metodológico mayor. Requiere coordinar 4 equipos simultáneos de UAT en lugar de secuencial.',
+    impactoMediano: 'Tiempo total de UAT se reduce de 6 a 4 semanas. Requiere mayor disciplina en gestión de defectos.',
+    impactoGoLive: 'Recuperas 2 semanas del cronograma. Probabilidad de cumplir 15 sep aumenta de 60% a 80%.',
+    tradeoffs: '✅ Ganancia significativa de tiempo sin costo adicional\n✅ Mayor cobertura de pruebas en paralelo\n❌ Mayor complejidad de gestión\n❌ Riesgo de defectos cruzados entre módulos no detectados',
+    probabilidadExito: '75% — depende de la madurez del equipo de QA y de la disponibilidad de usuarios clínicos',
+    recomendacion: '✅ RECOMENDADO con condición: contratar líder QA externo experimentado por 8 semanas para coordinar la paralelización. Costo $15-20K, retorno de 2 semanas en cronograma vale 5-10x.'
+  }
+};
+
+// =========================================================================
+// FUNCIONES DE LA VISTA "INSIGHTS"
+// =========================================================================
+
+let __ultimoAnalisis = null;
+
+function ejecutarAnalisis() {
+  // Recolectar datos de la app actual (de las tablas/DOM o de los datos cargados)
+  const datos = window.__datosCargados || generarDatosDemo();
+
+  const alertas = MOTOR_REGLAS.evaluar(datos);
+  const salud = MOTOR_REGLAS.calcularSalud(alertas, datos);
+  const resumen = MOTOR_REGLAS.generarResumen(alertas, datos, salud);
+  const diagnostico = MOTOR_REGLAS.generarDiagnostico(alertas, datos);
+  const mitigacion = MOTOR_REGLAS.generarMitigacion(alertas);
+
+  __ultimoAnalisis = { alertas, salud, resumen, diagnostico, mitigacion };
+
+  renderInsights(__ultimoAnalisis);
+}
+
+function renderInsights(analisis) {
+  // KPIs maestros
+  const elSalud = document.getElementById('ia-salud');
+  const elSaludFoot = document.getElementById('ia-salud-foot');
+  if (elSalud) {
+    elSalud.textContent = analisis.salud.score + '/100';
+    const color = analisis.salud.color === 'ok' ? 'var(--color-text-success)' :
+                  analisis.salud.color === 'warn' ? 'var(--color-text-warning)' :
+                  'var(--color-text-danger)';
+    elSalud.style.color = color;
+    if (elSaludFoot) {
+      elSaludFoot.textContent = analisis.salud.color === 'ok' ? 'portafolio saludable' :
+                                analisis.salud.color === 'warn' ? 'requiere atención' :
+                                'situación crítica';
+      elSaludFoot.style.color = color;
+    }
+  }
+  document.getElementById('ia-probabilidad').textContent = analisis.salud.probGoLive + '%';
+
+  const criticas = analisis.alertas.filter(a => a.severidad === 'danger').length;
+  const medias = analisis.alertas.filter(a => a.severidad === 'warn').length;
+  document.getElementById('ia-alertas').textContent = analisis.alertas.length;
+  document.getElementById('ia-alertas-foot').textContent = criticas + ' críticas · ' + medias + ' medias';
+
+  // Contar mitigaciones únicas
+  const mitsUnicas = new Set();
+  analisis.alertas.forEach(a => { if (a.mitigaciones) a.mitigaciones.forEach(m => mitsUnicas.add(m)); });
+  document.getElementById('ia-mitigaciones').textContent = mitsUnicas.size;
+
+  // Textos
+  document.getElementById('ia-resumen').textContent = analisis.resumen;
+  document.getElementById('ia-diagnostico').textContent = analisis.diagnostico;
+  document.getElementById('ia-mitigacion').textContent = analisis.mitigacion;
+
+  // Lista de alertas
+  const cont = document.getElementById('ia-alertas-lista');
+  if (cont && analisis.alertas.length) {
+    cont.innerHTML = analisis.alertas.map(a => {
+      const colorBorde = a.severidad === 'danger' ? 'var(--color-text-danger)' :
+                        a.severidad === 'warn' ? 'var(--color-text-warning)' :
+                        'var(--color-text-info)';
+      const pillClass = 'tcp-pill-' + (a.severidad || 'info');
+      return '<div style="padding: 10px 14px; background: var(--color-bg-secondary); border-radius: 6px; border-left: 3px solid ' + colorBorde + ';">' +
+        '<div style="display: flex; justify-content: space-between; align-items: start; gap: 12px;">' +
+          '<div style="flex: 1;">' +
+            '<div style="font-weight: 500; margin-bottom: 4px;">' + (a.titulo || '') + '</div>' +
+            '<div style="color: var(--color-text-secondary); font-size: 11px;">' + (a.descripcion || '') + '</div>' +
+          '</div>' +
+          '<div style="display: flex; flex-direction: column; align-items: end; gap: 4px;">' +
+            '<span class="tcp-pill ' + pillClass + '">' + (a.severidad || '') + '</span>' +
+            '<span style="font-size: 10px; color: var(--color-text-tertiary);">' + (a.regla || '') + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } else if (cont) {
+    cont.innerHTML = '<div style="color: var(--color-text-success); padding: 12px;">✅ Sin alertas activas. El portafolio opera dentro de parámetros normales.</div>';
+  }
+}
+
+function simular(escenarioId) {
+  const esc = SIMULADOR[escenarioId];
+  if (!esc) return;
+
+  const respDiv = document.getElementById('ia-respuesta-simulacion');
+  respDiv.style.display = 'block';
+
+  let html = '<div style="margin-bottom: 12px;"><strong style="font-size: 13px;">🎯 ' + esc.titulo + '</strong></div>';
+
+  html += '<div style="margin-bottom: 10px;"><span style="color: var(--color-text-info); font-weight: 500;">⚡ Impacto inmediato (próximas 2 semanas):</span><br>' + esc.impactoInmediato + '</div>';
+
+  html += '<div style="margin-bottom: 10px;"><span style="color: var(--color-text-info); font-weight: 500;">📅 Impacto de mediano plazo (1-3 meses):</span><br>' + esc.impactoMediano + '</div>';
+
+  html += '<div style="margin-bottom: 10px;"><span style="color: var(--color-text-info); font-weight: 500;">🎯 Impacto en go-live institucional:</span><br>' + esc.impactoGoLive + '</div>';
+
+  html += '<div style="margin-bottom: 10px;"><span style="color: var(--color-text-warning); font-weight: 500;">⚖️ Trade-offs:</span><br>' + esc.tradeoffs.replace(/\n/g, '<br>') + '</div>';
+
+  html += '<div style="margin-bottom: 10px;"><span style="color: var(--color-text-success); font-weight: 500;">📊 Probabilidad de éxito:</span> ' + esc.probabilidadExito + '</div>';
+
+  html += '<div style="margin-top: 14px; padding: 10px; background: var(--color-bg-secondary); border-radius: 6px;"><strong>💡 Recomendación final:</strong><br>' + esc.recomendacion + '</div>';
+
+  respDiv.innerHTML = html;
+}
+
+function generarDatosDemo() {
+  // Si no hay datos cargados, usar los demo embebidos para que el motor funcione
+  return {
+    Proyectos: [
+      { nombre: 'Core HIS/EMR', tipo: 'Estratégico', avance: 62, salud: 'warn', go_live: '15 sep 2026' },
+      { nombre: 'Integración LIS', tipo: 'Legado', avance: 88, salud: 'ok', go_live: '30 jun 2026' },
+      { nombre: 'Integración RIS/PACS', tipo: 'Legado', avance: 75, salud: 'ok', go_live: '15 jul 2026' },
+      { nombre: 'Integración ERP/Farmacia', tipo: 'Legado', avance: 41, salud: 'danger', go_live: '30 jun 2026' },
+      { nombre: 'Integración facturación', tipo: 'Legado', avance: 58, salud: 'warn', go_live: '20 jul 2026' },
+      { nombre: 'Mejora · triaje lean', tipo: 'Mejora', avance: 92, salud: 'ok', go_live: '15 may 2026' },
+      { nombre: 'Mejora · seguridad paciente', tipo: 'Mejora', avance: 80, salud: 'ok', go_live: '30 jun 2026' }
+    ],
+    HL7: [
+      { sistema: 'LIS', tipo_mensaje: 'ORU', volumen_24h: 8420, tasa_exito: 99.8, estado: 'ok' },
+      { sistema: 'ERP/Farmacia', tipo_mensaje: 'DFT', volumen_24h: 2840, tasa_exito: 88.0, estado: 'danger' },
+      { sistema: 'Admisión', tipo_mensaje: 'ADT', volumen_24h: 14250, tasa_exito: 99.1, estado: 'warn' }
+    ],
+    Equipo: [
+      { rol: 'Arquitecto HL7', personas: 1, carga: 120, estado: 'danger' },
+      { rol: 'Desarrolladores HIS', personas: 6, carga: 110, estado: 'warn' },
+      { rol: 'Líderes clínicos', personas: 5, carga: 30, estado: 'ok' }
+    ],
+    Riesgos: [
+      { id: 'R-001', riesgo: 'Migración datos clínicos', severidad: 'danger' },
+      { id: 'R-002', riesgo: 'Falla DFT cargos farmacia', severidad: 'danger' },
+      { id: 'R-003', riesgo: 'Dependencia HL7 ERP', severidad: 'danger' }
+    ],
+    Hitos: [
+      { nombre: 'Certificación HL7 ERP', fecha: '18 jun 2026', estado: 'danger' },
+      { nombre: 'UAT módulo prescripción', fecha: '28 may 2026', estado: 'warn' }
+    ]
+  };
+}
+
+// Hook para guardar datos cuando llegan de la API
+const aplicarDatosOriginalIA = aplicarDatos;
+aplicarDatos = function(data) {
+  window.__datosCargados = data;
+  aplicarDatosOriginalIA(data);
+};
+
+// Auto-ejecutar análisis cuando el usuario entra a la vista IA por primera vez
+const goViewOriginal = goView;
+goView = function(v) {
+  goViewOriginal(v);
+  if (v === 'ia' && !__ultimoAnalisis) {
+    setTimeout(ejecutarAnalisis, 200);
+  }
+};
+
 
 renderCharts('exec');
 </script>
