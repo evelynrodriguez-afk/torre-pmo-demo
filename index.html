@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torre de Control PMO Salud · Demo</title>
+<meta name="description" content="Torre de Control PMO para portafolios del sector salud con sistema core, integración HL7 y mejora continua. Demo interactiva.">
+<style>
+:root {
+  --color-bg-page: #FAFAF7;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F1EFE8;
+  --color-bg-info: #E6F1FB;
+  --color-bg-success: #EAF3DE;
+  --color-bg-warning: #FAEEDA;
+  --color-bg-danger: #FCEBEB;
+  --color-text-primary: #2C2C2A;
+  --color-text-secondary: #5F5E5A;
+  --color-text-tertiary: #888780;
+  --color-text-info: #185FA5;
+  --color-text-success: #3B6D11;
+  --color-text-warning: #854F0B;
+  --color-text-danger: #A32D2D;
+  --color-border-tertiary: rgba(0,0,0,0.08);
+  --color-border-secondary: rgba(0,0,0,0.15);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-page: #1A1A18;
+    --color-bg-primary: #25251F;
+    --color-bg-secondary: #2C2C2A;
+    --color-bg-info: #0C447C;
+    --color-bg-success: #27500A;
+    --color-bg-warning: #633806;
+    --color-bg-danger: #791F1F;
+    --color-text-primary: #E8E6DC;
+    --color-text-secondary: #B4B2A9;
+    --color-text-tertiary: #888780;
+    --color-text-info: #85B7EB;
+    --color-text-success: #C0DD97;
+    --color-text-warning: #FAC775;
+    --color-text-danger: #F09595;
+    --color-border-tertiary: rgba(255,255,255,0.1);
+    --color-border-secondary: rgba(255,255,255,0.2);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 0 0 16px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 18px; }
+.header-meta { font-size: 11px; color: var(--color-text-secondary); letter-spacing: 0.5px; text-transform: lowercase; }
+.header-title { font-size: 20px; font-weight: 500; margin-top: 2px; }
+.header-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.brand { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
+.brand a { color: var(--color-text-info); text-decoration: none; }
+.brand a:hover { text-decoration: underline; }
+.tcp-nav { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px; background: var(--color-bg-secondary); border-radius: 12px; margin-bottom: 18px; }
+.tcp-nav-item { flex: 1; min-width: 100px; font-size: 12px; padding: 10px 8px; border-radius: 8px; background: transparent; color: var(--color-text-secondary); border: none; cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+.tcp-nav-item:hover { background: var(--color-bg-primary); color: var(--color-text-primary); }
+.tcp-nav-item.active { background: var(--color-bg-primary); color: var(--color-text-primary); font-weight: 500; }
+.tcp-view { display: none; }
+.tcp-view.active { display: block; }
+.tcp-card { background: var(--color-bg-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 16px; }
+.tcp-metric { background: var(--color-bg-secondary); border-radius: 8px; padding: 14px; }
+.tcp-metric-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.tcp-metric-value { font-size: 24px; font-weight: 500; }
+.tcp-metric-foot { font-size: 11px; margin-top: 4px; }
+.tcp-pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+.tcp-pill-ok { background: var(--color-bg-success); color: var(--color-text-success); }
+.tcp-pill-warn { background: var(--color-bg-warning); color: var(--color-text-warning); }
+.tcp-pill-danger { background: var(--color-bg-danger); color: var(--color-text-danger); }
+.tcp-pill-info { background: var(--color-bg-info); color: var(--color-text-info); }
+.tcp-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--color-bg-secondary); border-radius: 6px; font-size: 12px; }
+.tcp-section-title { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
+.tcp-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.tcp-table th { text-align: left; padding: 10px 6px; font-weight: 400; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 11px; }
+.tcp-table td { padding: 10px 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.tcp-table tr:last-child td { border-bottom: none; }
+.tcp-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; vertical-align: middle; }
+.tcp-bar { height: 6px; background: var(--color-bg-secondary); border-radius: 3px; overflow: hidden; }
+.tcp-bar-fill { height: 100%; transition: width .3s; }
+.btn { font-size: 12px; padding: 8px 14px; background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: 8px; color: var(--color-text-primary); cursor: pointer; font-family: inherit; transition: all .15s; }
+.btn:hover { background: var(--color-bg-secondary); }
+.btn-action { flex: 1; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-mix { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; margin-bottom: 12px; }
+.actions { display: flex; gap: 8px; margin-top: 18px; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: var(--color-bg-primary); border-radius: 12px; max-width: 500px; width: 100%; padding: 24px; }
+.modal-title { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+.modal-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 16px; }
+.modal-text strong { color: var(--color-text-primary); font-weight: 500; }
+.demo-banner { background: var(--color-bg-info); color: var(--color-text-info); border-radius: 8px; padding: 8px 14px; font-size: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+@media (max-width: 768px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3, .grid-2, .grid-mix { grid-template-columns: 1fr; }
+  .actions { flex-direction: column; }
+  .header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .tcp-nav-item { min-width: 80px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="demo-banner">
+  <span>🩺</span>
+  <span>Demo interactiva · datos simulados con fines ilustrativos · Centro de Salud Metropolitano</span>
+</div>
+
+<div class="header">
+  <div>
+    <div class="header-meta">torre de control · pmo salud</div>
+    <div class="header-title" id="tcp-title">Vista ejecutiva</div>
+    <div class="header-sub">Centro de Salud Metropolitano · datos al 28 abr 2026 · 09:42</div>
+    <div class="brand">Diseñado por Evelyn · Consultora BPM &amp; Transformación · <a href="https://www.linkedin.com" target="_blank">LinkedIn</a></div>
+  </div>
+  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+    <span class="tcp-pill tcp-pill-ok">en línea</span>
+    <span class="tcp-pill tcp-pill-warn">3 alertas</span>
+  </div>
+</div>
+
+<div class="tcp-nav">
+  <button class="tcp-nav-item active" data-view="exec">Ejecutivo</button>
+  <button class="tcp-nav-item" data-view="portfolio">Portafolio</button>
+  <button class="tcp-nav-item" data-view="core">Core HIS</button>
+  <button class="tcp-nav-item" data-view="hl7">HL7</button>
+  <button class="tcp-nav-item" data-view="risks">Riesgos</button>
+  <button class="tcp-nav-item" data-view="gov">Gobernanza</button>
+  <button class="tcp-nav-item" data-view="improve">Mejora</button>
+</div>
+
+<div class="tcp-view active" id="view-exec">
+  <div class="grid-4">
+    <div class="tcp-metric"><div class="tcp-metric-label">Salud del portafolio</div><div class="tcp-metric-value">78<span style="font-size: 14px; color: var(--color-text-secondary);">/100</span></div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">▼ 4 vs sem. anterior</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Avance core (HIS/EMR)</div><div class="tcp-metric-value">62%</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">SPI 0.94 · CPI 0.97</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Interfaces HL7 activas</div><div class="tcp-metric-value">11<span style="font-size: 14px; color: var(--color-text-secondary);">/14</span></div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">2 en pruebas · 1 falla</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Riesgos críticos</div><div class="tcp-metric-value">5</div><div class="tcp-metric-foot" style="color: var(--color-text-danger);">▲ 2 nuevos esta sem.</div></div>
+  </div>
+
+  <div class="grid-mix">
+    <div class="tcp-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div class="tcp-section-title" style="margin: 0;">Avance del portafolio · plan vs real</div>
+        <button class="btn" onclick="goView('portfolio')">Ver portafolio →</button>
+      </div>
+      <div style="position: relative; width: 100%; height: 240px;"><canvas id="execAvance"></canvas></div>
+    </div>
+    <div class="tcp-card">
+      <div class="tcp-section-title">Estado HL7 (resumen)</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="tcp-row"><span>LIS · ORU resultados</span><span class="tcp-pill tcp-pill-ok">99.8%</span></div>
+        <div class="tcp-row"><span>RIS/PACS · ORM</span><span class="tcp-pill tcp-pill-ok">99.5%</span></div>
+        <div class="tcp-row"><span>ADT · admisiones</span><span class="tcp-pill tcp-pill-warn">latencia</span></div>
+        <div class="tcp-row"><span>ERP/Farmacia · DFT</span><span class="tcp-pill tcp-pill-danger">caída 12%</span></div>
+        <div class="tcp-row"><span>Facturación · DFT</span><span class="tcp-pill tcp-pill-ok">99.9%</span></div>
+      </div>
+      <button class="btn" style="width: 100%; margin-top: 12px;" onclick="goView('hl7')">Ir a vista HL7 →</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="tcp-card">
+      <div class="tcp-section-title">Top 5 riesgos críticos</div>
+      <table class="tcp-table">
+        <tr><td>Migración datos clínicos</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-danger">alto</span></td></tr>
+        <tr><td>Falla DFT cargos farmacia</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-danger">alto</span></td></tr>
+        <tr><td>Adopción prescripción</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+        <tr><td>Cumplimiento normativo</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+        <tr><td>Capacidad equipo HL7</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+      </table>
+      <button class="btn" style="width: 100%; margin-top: 12px;" onclick="goView('risks')">Ver matriz completa →</button>
+    </div>
+    <div class="tcp-card">
+      <div class="tcp-section-title">Semáforo de proyectos</div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-warning);"></span>Core HIS/EMR</span><span style="color: var(--color-text-secondary);">62%</span></div>
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-success);"></span>Integración LIS</span><span style="color: var(--color-text-secondary);">88%</span></div>
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-success);"></span>Integración RIS/PACS</span><span style="color: var(--color-text-secondary);">75%</span></div>
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-danger);"></span>Integración ERP/Farmacia</span><span style="color: var(--color-text-secondary);">41%</span></div>
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-warning);"></span>Integración facturación</span><span style="color: var(--color-text-secondary);">58%</span></div>
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-success);"></span>Mejora · triaje lean</span><span style="color: var(--color-text-secondary);">92%</span></div>
+        <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-success);"></span>Mejora · seguridad paciente</span><span style="color: var(--color-text-secondary);">80%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tcp-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <div class="tcp-section-title" style="margin: 0;">Ejecución presupuestal · USD acumulado</div>
+      <span style="font-size: 11px; color: var(--color-text-secondary);">Plan: $2.4M · Real: $2.32M · CPI 0.97</span>
+    </div>
+    <div style="position: relative; width: 100%; height: 200px;"><canvas id="execCosto"></canvas></div>
+  </div>
+</div>
+
+<div class="tcp-view" id="view-portfolio">
+  <div class="grid-3">
+    <div class="tcp-metric"><div class="tcp-metric-label">Total proyectos activos</div><div class="tcp-metric-value">7</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">1 core · 4 legados · 2 mejoras</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Inversión total comprometida</div><div class="tcp-metric-value">$3.8M</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">61% ejecutado</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Recursos asignados</div><div class="tcp-metric-value">42</div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">2 sobrecargados</div></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Cartera de proyectos</div>
+    <table class="tcp-table">
+      <thead><tr><th>Proyecto</th><th>Tipo</th><th>Avance</th><th>Salud</th><th>Go-live</th></tr></thead>
+      <tbody>
+        <tr><td>Core HIS/EMR</td><td>Estratégico</td><td>62%</td><td><span class="tcp-pill tcp-pill-warn">en riesgo</span></td><td>15 sep 2026</td></tr>
+        <tr><td>Integración LIS</td><td>Legado</td><td>88%</td><td><span class="tcp-pill tcp-pill-ok">en plan</span></td><td>30 jun 2026</td></tr>
+        <tr><td>Integración RIS/PACS</td><td>Legado</td><td>75%</td><td><span class="tcp-pill tcp-pill-ok">en plan</span></td><td>15 jul 2026</td></tr>
+        <tr><td>Integración ERP/Farmacia</td><td>Legado</td><td>41%</td><td><span class="tcp-pill tcp-pill-danger">crítico</span></td><td>30 jun 2026</td></tr>
+        <tr><td>Integración facturación</td><td>Legado</td><td>58%</td><td><span class="tcp-pill tcp-pill-warn">en riesgo</span></td><td>20 jul 2026</td></tr>
+        <tr><td>Mejora · triaje lean</td><td>Mejora</td><td>92%</td><td><span class="tcp-pill tcp-pill-ok">en plan</span></td><td>15 may 2026</td></tr>
+        <tr><td>Mejora · seguridad paciente</td><td>Mejora</td><td>80%</td><td><span class="tcp-pill tcp-pill-ok">en plan</span></td><td>30 jun 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tcp-card">
+    <div class="tcp-section-title">Distribución de inversión por tipo de proyecto</div>
+    <div style="position: relative; width: 100%; height: 240px;"><canvas id="portfolioMix"></canvas></div>
+  </div>
+</div>
+
+<div class="tcp-view" id="view-core">
+  <div class="grid-4">
+    <div class="tcp-metric"><div class="tcp-metric-label">Avance global</div><div class="tcp-metric-value">62%</div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">plan: 70% · gap -8 pp</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">SPI · cronograma</div><div class="tcp-metric-value">0.94</div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">retraso ~3 sem.</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">CPI · costo</div><div class="tcp-metric-value">0.97</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">dentro de tolerancia</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Días al go-live</div><div class="tcp-metric-value">140</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">15 sep 2026</div></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Avance por fase del proyecto core</div>
+    <div style="display: flex; flex-direction: column; gap: 14px;" id="corePhases"></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Avance por módulo funcional</div>
+    <div style="position: relative; width: 100%; height: 240px;"><canvas id="coreModules"></canvas></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="tcp-card">
+      <div class="tcp-section-title">Próximos hitos críticos</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;" id="coreMilestones"></div>
+    </div>
+    <div class="tcp-card">
+      <div class="tcp-section-title">Equipo del core · carga actual</div>
+      <table class="tcp-table">
+        <tr><td>Gerente proyecto</td><td>1</td><td>100%</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>Analistas funcionales</td><td>4</td><td>90%</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>Desarrolladores HIS</td><td>6</td><td>110%</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-warn">sobrecarga</span></td></tr>
+        <tr><td>Arquitecto HL7</td><td>1</td><td>120%</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-danger">cuello</span></td></tr>
+        <tr><td>Líderes clínicos</td><td>5</td><td>30%</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>QA / testers</td><td>3</td><td>85%</td><td style="text-align: right;"><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-action" onclick="showModal('Plan de mitigación de riesgos','<strong>Riesgos altos del core HIS:</strong><br><br>1. <strong>Migración datos clínicos:</strong> contratar equipo dedicado de calidad de datos por 8 semanas, validación clínica por especialidad, plan B de carga manual asistida.<br><br>2. <strong>Dependencia HL7 ERP:</strong> contratar 2do arquitecto, escalar a vendor del ERP, plan de bypass temporal vía batch.<br><br>3. <strong>Adopción prescripción:</strong> programa de champions clínicos, training intensivo, soporte presencial primeras 4 semanas post go-live.')">Plan de mitigación</button>
+    <button class="btn btn-action" onclick="showModal('Plan de recuperación','<strong>Cómo recuperar 3 semanas sin mover go-live:</strong><br><br>• Paralelizar UAT por módulos en lugar de secuencial (-1.5 sem)<br>• Comprimir capacitación con modalidad blended (-0.5 sem)<br>• Refuerzo de equipo HL7: contratar consultor especializado<br>• Decidir MVP de reportería: solo críticos en go-live (-1 sem)<br>• Mantener buffer de 2 semanas pre go-live<br><br><strong>Decisión clave:</strong> aprobar contratación 2do arquitecto HL7 esta semana.')">Plan de recuperación</button>
+    <button class="btn btn-action" onclick="showModal('Reporte para comité directivo','<strong>Status semanal · Core HIS/EMR</strong><br><br>📊 <strong>Avance:</strong> 62% real vs 70% plan (gap -8 pp, ~3 sem retraso)<br>💰 <strong>Costo:</strong> CPI 0.97, dentro de tolerancia<br>🚦 <strong>Salud:</strong> ámbar (en riesgo controlado)<br><br><strong>Decisiones requeridas del directivo:</strong><br>1. Aprobar contratación 2do arquitecto HL7<br>2. Validar alcance MVP de reportería<br>3. Confirmar ventana go-live 15 sep<br><br><strong>Próximo hito crítico:</strong> certificación HL7 ERP el 18 jun')">Reporte para comité</button>
+  </div>
+</div>
+
+<div class="tcp-view" id="view-hl7">
+  <div class="grid-4">
+    <div class="tcp-metric"><div class="tcp-metric-label">Mensajes / 24h</div><div class="tcp-metric-value">42,180</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">▲ 8% vs ayer</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Tasa éxito (ACK)</div><div class="tcp-metric-value">98.4%</div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">SLA: 99.5%</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Latencia promedio</div><div class="tcp-metric-value">340ms</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">SLA: &lt;500ms</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Mensajes en cola</div><div class="tcp-metric-value">87</div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">cola ERP creciente</div></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Catálogo de interfaces HL7</div>
+    <table class="tcp-table">
+      <thead><tr><th>Sistema</th><th>Tipo mensaje</th><th>Volumen 24h</th><th>Tasa éxito</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td>LIS</td><td>ORU (resultados)</td><td>8,420</td><td>99.8%</td><td><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>LIS</td><td>ORM (órdenes)</td><td>6,180</td><td>99.7%</td><td><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>RIS/PACS</td><td>ORM (órdenes)</td><td>3,210</td><td>99.5%</td><td><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>RIS/PACS</td><td>ORU (informes)</td><td>2,890</td><td>99.4%</td><td><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>Admisión</td><td>ADT (A01-A08)</td><td>14,250</td><td>99.1%</td><td><span class="tcp-pill tcp-pill-warn">latencia</span></td></tr>
+        <tr><td>ERP/Farmacia</td><td>DFT (cargos)</td><td>2,840</td><td>88.0%</td><td><span class="tcp-pill tcp-pill-danger">caída</span></td></tr>
+        <tr><td>ERP/Farmacia</td><td>RDS (despacho)</td><td>1,560</td><td>96.2%</td><td><span class="tcp-pill tcp-pill-warn">degradado</span></td></tr>
+        <tr><td>Facturación</td><td>DFT (seguros)</td><td>2,830</td><td>99.9%</td><td><span class="tcp-pill tcp-pill-ok">ok</span></td></tr>
+        <tr><td>Telemedicina</td><td>FHIR R4</td><td>0</td><td>—</td><td><span class="tcp-pill tcp-pill-info">pruebas</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Volumen de mensajes HL7 · últimas 12 horas</div>
+    <div style="position: relative; width: 100%; height: 220px;"><canvas id="hl7Volume"></canvas></div>
+  </div>
+
+  <div class="tcp-card">
+    <div class="tcp-section-title">Alertas activas del bus de integración</div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="tcp-row" style="border-left: 3px solid var(--color-text-danger); border-radius: 0 6px 6px 0;">
+        <div><div style="font-weight: 500;">DFT ERP/Farmacia · 12% mensajes con NAK</div><div style="color: var(--color-text-secondary); font-size: 11px;">desde 06:42 · 340 mensajes en cola</div></div>
+        <button class="btn" onclick="showModal('Investigación · falla DFT ERP/Farmacia','<strong>Análisis de causa raíz:</strong><br><br>• 12% mensajes DFT con respuesta NAK desde 06:42<br>• Patrón: errores en código de cargo (campo PR1)<br>• Hipótesis: actualización de catálogo de procedimientos sin sincronizar<br><br><strong>Plan de mitigación inmediato:</strong><br>1. Activar bypass batch nocturno temporalmente<br>2. Sincronizar catálogo PR1 entre core y ERP<br>3. Reproceso manual de los 340 mensajes en cola<br>4. Validación clínica de cargos antes de cierre del día')">Investigar</button>
+      </div>
+      <div class="tcp-row" style="border-left: 3px solid var(--color-text-warning); border-radius: 0 6px 6px 0;">
+        <div><div style="font-weight: 500;">ADT · latencia P95 de 1.2s (SLA 0.8s)</div><div style="color: var(--color-text-secondary); font-size: 11px;">desde 08:15 · admisiones lentas en triaje</div></div>
+        <button class="btn" onclick="showModal('Análisis · latencia ADT','<strong>Causa probable:</strong><br><br>• Pico de admisiones de la mañana (200% volumen normal)<br>• Cola del motor de integración saturada<br><br><strong>Mitigación:</strong><br>• Escalar instancias del motor HL7 (auto-scaling)<br>• Revisar índices en tabla MSH del core<br>• Considerar caching de validación de pacientes')">Analizar</button>
+      </div>
+      <div class="tcp-row" style="border-left: 3px solid var(--color-text-warning); border-radius: 0 6px 6px 0;">
+        <div><div style="font-weight: 500;">RDS Farmacia · degradación parcial</div><div style="color: var(--color-text-secondary); font-size: 11px;">tasa éxito bajó a 96.2% desde 09:00</div></div>
+        <button class="btn" onclick="showModal('Diagnóstico · RDS Farmacia','<strong>Síntoma:</strong> tasa de éxito en mensajes RDS bajó 3.7 pp en 1 hora<br><br><strong>Hipótesis a validar:</strong><br>• Posible relación con la falla DFT (mismo sistema legado)<br>• Verificar disponibilidad del módulo de despacho<br>• Revisar logs del adaptador HL7 del ERP<br><br><strong>Acción:</strong> escalar a equipo de integración para diagnóstico conjunto')">Analizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tcp-view" id="view-risks">
+  <div class="grid-4">
+    <div class="tcp-metric"><div class="tcp-metric-label">Riesgos totales</div><div class="tcp-metric-value">23</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">portafolio completo</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Críticos / altos</div><div class="tcp-metric-value">5</div><div class="tcp-metric-foot" style="color: var(--color-text-danger);">▲ 2 nuevos</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Medios</div><div class="tcp-metric-value">11</div><div class="tcp-metric-foot" style="color: var(--color-text-warning);">requieren plan</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Mitigados / cerrados</div><div class="tcp-metric-value">7</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">trimestre actual</div></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Matriz de riesgos · probabilidad × impacto</div>
+    <div style="position: relative; width: 100%; height: 320px;"><canvas id="riskMatrix"></canvas></div>
+  </div>
+
+  <div class="tcp-card">
+    <div class="tcp-section-title">Riesgos críticos del portafolio</div>
+    <table class="tcp-table">
+      <thead><tr><th>ID</th><th>Riesgo</th><th>Proyecto</th><th>Owner</th><th>Severidad</th></tr></thead>
+      <tbody>
+        <tr><td>R-001</td><td>Migración datos clínicos legados</td><td>Core HIS</td><td>J. Ramírez</td><td><span class="tcp-pill tcp-pill-danger">alto</span></td></tr>
+        <tr><td>R-002</td><td>Falla DFT cargos farmacia</td><td>ERP/Farmacia</td><td>L. Torres</td><td><span class="tcp-pill tcp-pill-danger">alto</span></td></tr>
+        <tr><td>R-003</td><td>Dependencia HL7 ERP inestable</td><td>Core HIS</td><td>M. Vega</td><td><span class="tcp-pill tcp-pill-danger">alto</span></td></tr>
+        <tr><td>R-004</td><td>Adopción módulo prescripción</td><td>Core HIS</td><td>Dr. Ríos</td><td><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+        <tr><td>R-005</td><td>Cumplimiento HIPAA / DPDP</td><td>Transversal</td><td>C. Soto</td><td><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+        <tr><td>R-006</td><td>Capacidad arquitecto HL7</td><td>Transversal</td><td>M. Vega</td><td><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+        <tr><td>R-007</td><td>Capacitación tardía clínica</td><td>Core HIS</td><td>J. Ramírez</td><td><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+        <tr><td>R-008</td><td>Ventana go-live alta demanda</td><td>Core HIS</td><td>CMO</td><td><span class="tcp-pill tcp-pill-warn">medio</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="tcp-view" id="view-gov">
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Cadencia de comités · semana actual</div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-info);"></span><strong style="font-weight: 500;">Lunes 09:00</strong> · Standup operativo del portafolio</span><span class="tcp-pill tcp-pill-ok">realizado</span></div>
+      <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-info);"></span><strong style="font-weight: 500;">Martes 10:00</strong> · Comité de integración HL7</span><span class="tcp-pill tcp-pill-ok">realizado</span></div>
+      <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-info);"></span><strong style="font-weight: 500;">Jueves 14:00</strong> · Comité de portafolio</span><span class="tcp-pill tcp-pill-warn">hoy</span></div>
+      <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-info);"></span><strong style="font-weight: 500;">Viernes 11:00</strong> · Comité clínico de calidad</span><span class="tcp-pill tcp-pill-info">programado</span></div>
+      <div class="tcp-row"><span><span class="tcp-dot" style="background: var(--color-text-info);"></span><strong style="font-weight: 500;">Mensual · 1er martes</strong> · Comité directivo</span><span class="tcp-pill tcp-pill-info">5 may</span></div>
+    </div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Roles clave de la torre de control</div>
+    <table class="tcp-table">
+      <thead><tr><th>Rol</th><th>Persona</th><th>Responsabilidad principal</th></tr></thead>
+      <tbody>
+        <tr><td>Sponsor ejecutivo</td><td>Dra. P. Mendoza · CMO</td><td>Decisiones estratégicas y escalamientos</td></tr>
+        <tr><td>Director PMO</td><td>A. Salinas</td><td>Líder de la torre, gobernanza del portafolio</td></tr>
+        <tr><td>Gerente core HIS</td><td>J. Ramírez</td><td>Ejecución del proyecto core</td></tr>
+        <tr><td>Arquitecto HL7</td><td>M. Vega</td><td>Diseño y operación del bus de integración</td></tr>
+        <tr><td>Líder clínico</td><td>Dr. C. Ríos</td><td>Adopción clínica y validación funcional</td></tr>
+        <tr><td>Líder TI / infra</td><td>F. Aguirre</td><td>Plataforma, redes, seguridad técnica</td></tr>
+        <tr><td>Cumplimiento</td><td>C. Soto</td><td>HIPAA, normativa local, auditoría datos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tcp-card">
+    <div class="tcp-section-title">Decisiones pendientes para esta semana</div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="tcp-row" style="border-left: 3px solid var(--color-text-danger); border-radius: 0 6px 6px 0;"><div><div style="font-weight: 500;">Aprobar contratación 2do arquitecto HL7</div><div style="color: var(--color-text-secondary); font-size: 11px;">decide: comité directivo · impacto: certificación ERP 18 jun</div></div><span class="tcp-pill tcp-pill-danger">alta</span></div>
+      <div class="tcp-row" style="border-left: 3px solid var(--color-text-warning); border-radius: 0 6px 6px 0;"><div><div style="font-weight: 500;">Definir alcance MVP de reportería</div><div style="color: var(--color-text-secondary); font-size: 11px;">decide: PMO + CMO · impacto: cronograma fase 5</div></div><span class="tcp-pill tcp-pill-warn">media</span></div>
+      <div class="tcp-row" style="border-left: 3px solid var(--color-text-warning); border-radius: 0 6px 6px 0;"><div><div style="font-weight: 500;">Validar ventana go-live institucional</div><div style="color: var(--color-text-secondary); font-size: 11px;">decide: comité directivo · impacto: temporada alta demanda</div></div><span class="tcp-pill tcp-pill-warn">media</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="tcp-view" id="view-improve">
+  <div class="grid-3">
+    <div class="tcp-metric"><div class="tcp-metric-label">Iniciativas activas</div><div class="tcp-metric-value">8</div><div class="tcp-metric-foot" style="color: var(--color-text-secondary);">2 escalan al portafolio</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Ahorro proyectado anual</div><div class="tcp-metric-value">$420K</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">▲ vs target $380K</div></div>
+    <div class="tcp-metric"><div class="tcp-metric-label">Tiempo promedio ciclo</div><div class="tcp-metric-value">12 sem</div><div class="tcp-metric-foot" style="color: var(--color-text-success);">▼ desde 18 sem</div></div>
+  </div>
+
+  <div class="tcp-card" style="margin-bottom: 12px;">
+    <div class="tcp-section-title">Iniciativas de mejora continua</div>
+    <table class="tcp-table">
+      <thead><tr><th>Iniciativa</th><th>Tipo</th><th>Impacto esperado</th><th>Avance</th></tr></thead>
+      <tbody>
+        <tr><td>Triaje lean en emergencias</td><td>Proceso clínico</td><td>-30% tiempo espera</td><td>92%</td></tr>
+        <tr><td>Seguridad del paciente · doble verificación</td><td>Calidad</td><td>-50% errores medicación</td><td>80%</td></tr>
+        <tr><td>Automatización reportes regulatorios</td><td>Proceso admin</td><td>-15h/semana</td><td>65%</td></tr>
+        <tr><td>UX prescripción electrónica</td><td>Experiencia</td><td>+20% adopción</td><td>40%</td></tr>
+        <tr><td>Optimización agendamiento ambulatorio</td><td>Proceso clínico</td><td>-10% no-shows</td><td>55%</td></tr>
+        <tr><td>Tablero indicadores de calidad</td><td>Datos</td><td>visibilidad continua</td><td>30%</td></tr>
+        <tr><td>Capacitación clínica modular</td><td>Capacidades</td><td>+30% retención</td><td>70%</td></tr>
+        <tr><td>Reducción tiempo alta hospitalaria</td><td>Proceso clínico</td><td>-20% LOS</td><td>25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tcp-card">
+    <div class="tcp-section-title">Pipeline de mejora continua</div>
+    <div style="position: relative; width: 100%; height: 240px;"><canvas id="improveFunnel"></canvas></div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-action" onclick="showModal('Reporte ejecutivo semanal','<strong>Resumen ejecutivo · semana del 28 abr 2026</strong><br><br>📊 Salud del portafolio: 78/100 (▼4)<br>🏥 Core HIS: 62% (en riesgo controlado)<br>🔌 HL7: 11/14 interfaces ok<br>⚠️ 5 riesgos críticos · 3 decisiones pendientes<br><br><strong>Foco de la semana:</strong><br>• Resolver falla DFT ERP/Farmacia<br>• Aprobar 2do arquitecto HL7<br>• Avanzar UAT módulo prescripción')">Reporte semanal</button>
+  <button class="btn btn-action" onclick="showModal('Convocatoria · comité HL7','<strong>Comité de integración HL7</strong><br>Martes 05 may · 10:00-11:00<br><br><strong>Agenda:</strong><br>1. Status falla DFT ERP/Farmacia (15 min)<br>2. Plan certificación ERP al 18 jun (15 min)<br>3. Roadmap FHIR para telemedicina (15 min)<br>4. Decisiones y próximos pasos (15 min)<br><br><strong>Asistentes:</strong> M. Vega, J. Ramírez, L. Torres, F. Aguirre, A. Salinas')">Convocar comité HL7</button>
+  <button class="btn btn-action" onclick="alert('Para exportar a Word, presiona Ctrl/Cmd+P y selecciona Guardar como PDF, o comparte el link de esta demo.')">Exportar reporte</button>
+</div>
+
+<div style="margin-top: 32px; padding-top: 16px; border-top: 0.5px solid var(--color-border-tertiary); text-align: center; font-size: 11px; color: var(--color-text-tertiary);">
+  Torre de Control PMO Salud · demo interactiva · diseñada por Evelyn · consultora BPM &amp; transformación de procesos
+</div>
+
+</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-text" id="modal-text"></div>
+    <button class="btn" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const titles = { exec: 'Vista ejecutiva', portfolio: 'Portafolio de proyectos', core: 'Core HIS/EMR · detalle', hl7: 'Integración HL7 · monitoreo', risks: 'Gestión de riesgos', gov: 'Gobernanza y comités', improve: 'Mejora continua' };
+const charts = {};
+
+function goView(v) {
+  document.querySelectorAll('.tcp-nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+  document.querySelectorAll('.tcp-view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
+  document.getElementById('tcp-title').textContent = titles[v];
+  setTimeout(() => renderCharts(v), 50);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showModal(title, html) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-text').innerHTML = html;
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+document.querySelectorAll('.tcp-nav-item').forEach(b => b.addEventListener('click', () => goView(b.dataset.view)));
+
+const phases = [
+  { name: '1 · Análisis y diseño funcional', pct: 100, state: 'cerrado', color: '#3B6D11' },
+  { name: '2 · Configuración y parametrización', pct: 95, state: 'en cierre', color: '#3B6D11' },
+  { name: '3 · Migración de datos clínicos', pct: 68, state: 'en riesgo', color: '#854F0B' },
+  { name: '4 · Integración HL7 con legados', pct: 55, state: 'ERP retrasado', color: '#854F0B' },
+  { name: '5 · Pruebas integrales y UAT', pct: 30, state: 'en curso', color: '#185FA5' },
+  { name: '6 · Capacitación clínica', pct: 15, state: 'arrancando', color: '#888780' },
+  { name: '7 · Go-live y estabilización', pct: 0, state: 'pendiente', color: '#888780' }
+];
+document.getElementById('corePhases').innerHTML = phases.map(p => `
+  <div>
+    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+      <span><span class="tcp-dot" style="background: ${p.color};"></span>${p.name}</span>
+      <span style="color: var(--color-text-secondary);">${p.pct}% · ${p.state}</span>
+    </div>
+    <div class="tcp-bar"><div class="tcp-bar-fill" style="width: ${p.pct}%; background: ${p.color};"></div></div>
+  </div>`).join('');
+
+const milestones = [
+  { name: 'Cierre migración LIS', date: '12 may 2026', tag: 'en plan', cls: 'ok' },
+  { name: 'UAT módulo prescripción', date: '28 may 2026', tag: 'ajustado', cls: 'warn' },
+  { name: 'Certificación HL7 ERP', date: '18 jun 2026', tag: 'en riesgo', cls: 'danger' },
+  { name: 'Piloto controlado · 2 servicios', date: '22 jul 2026', tag: 'planificado', cls: 'info' },
+  { name: 'Go-live institucional', date: '15 sep 2026', tag: 'milestone', cls: 'info' }
+];
+document.getElementById('coreMilestones').innerHTML = milestones.map(m => `
+  <div class="tcp-row"><div><div style="font-weight: 500;">${m.name}</div><div style="color: var(--color-text-secondary); font-size: 11px;">${m.date}</div></div><span class="tcp-pill tcp-pill-${m.cls}">${m.tag}</span></div>`).join('');
+
+function destroy(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function renderCharts(view) {
+  if (view === 'exec') {
+    destroy('execAvance');
+    charts.execAvance = new Chart(document.getElementById('execAvance'), {
+      type: 'bar',
+      data: { labels: ['Core HIS', 'LIS', 'RIS/PACS', 'ERP/Farma', 'Facturación', 'Mejoras'], datasets: [
+        { label: 'Plan', data: [70, 90, 78, 65, 60, 75], backgroundColor: '#B5D4F4', borderRadius: 4 },
+        { label: 'Real', data: [62, 88, 75, 41, 58, 86], backgroundColor: '#185FA5', borderRadius: 4 } ] },
+      options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(128,128,128,0.1)' } }, y: { ticks: { font: { size: 11 } }, grid: { display: false } } } }
+    });
+    destroy('execCosto');
+    charts.execCosto = new Chart(document.getElementById('execCosto'), {
+      type: 'line',
+      data: { labels: ['Ene', 'Feb', 'Mar', 'Abr'], datasets: [
+        { label: 'Plan', data: [600, 1200, 1800, 2400], borderColor: '#888780', borderDash: [5,5], backgroundColor: 'transparent', tension: 0.3, pointRadius: 3 },
+        { label: 'Real', data: [580, 1180, 1750, 2320], borderColor: '#1D9E75', backgroundColor: 'transparent', tension: 0.3, pointRadius: 3 } ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { y: { ticks: { callback: v => '$' + (v/1000).toFixed(1) + 'M', font: { size: 10 } }, grid: { color: 'rgba(128,128,128,0.1)' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } }
+    });
+  }
+  if (view === 'portfolio') {
+    destroy('portfolioMix');
+    charts.portfolioMix = new Chart(document.getElementById('portfolioMix'), {
+      type: 'doughnut',
+      data: { labels: ['Core estratégico', 'Integraciones legados', 'Mejora continua'], datasets: [{ data: [55, 35, 10], backgroundColor: ['#185FA5', '#EF9F27', '#1D9E75'], borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12, generateLabels: c => c.data.labels.map((l, i) => ({ text: `${l} · ${c.data.datasets[0].data[i]}%`, fillStyle: c.data.datasets[0].backgroundColor[i], strokeStyle: c.data.datasets[0].backgroundColor[i], index: i })) } } } }
+    });
+  }
+  if (view === 'core') {
+    destroy('coreModules');
+    charts.coreModules = new Chart(document.getElementById('coreModules'), {
+      type: 'bar',
+      data: { labels: ['Admisión / ADT', 'Historia clínica', 'Prescripción', 'Órdenes médicas', 'Resultados', 'Hospitalización', 'Reportería'], datasets: [
+        { label: 'Plan', data: [85, 75, 65, 70, 72, 60, 55], backgroundColor: '#B5D4F4', borderRadius: 4 },
+        { label: 'Real', data: [82, 70, 48, 65, 68, 55, 42], backgroundColor: '#185FA5', borderRadius: 4 } ] },
+      options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(128,128,128,0.1)' } }, y: { ticks: { font: { size: 11 } }, grid: { display: false } } } }
+    });
+  }
+  if (view === 'hl7') {
+    destroy('hl7Volume');
+    const hours = ['00','02','04','06','08','10','12','14','16','18','20','22'];
+    charts.hl7Volume = new Chart(document.getElementById('hl7Volume'), {
+      type: 'line',
+      data: { labels: hours, datasets: [
+        { label: 'Mensajes ok', data: [1200, 980, 850, 1450, 3200, 4100, 4800, 4600, 3900, 2800, 1900, 1400], borderColor: '#1D9E75', backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+        { label: 'NAK / errores', data: [12, 8, 6, 18, 95, 240, 320, 280, 180, 90, 35, 20], borderColor: '#E24B4A', backgroundColor: 'transparent', tension: 0.3, pointRadius: 2, borderDash: [4,4] } ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } } },
+        scales: { y: { ticks: { font: { size: 10 } }, grid: { color: 'rgba(128,128,128,0.1)' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } }
+    });
+  }
+  if (view === 'risks') {
+    destroy('riskMatrix');
+    charts.riskMatrix = new Chart(document.getElementById('riskMatrix'), {
+      type: 'scatter',
+      data: { datasets: [
+        { label: 'Alto', data: [{x:5,y:4,r:10,id:'R-001'},{x:4,y:5,r:10,id:'R-002'},{x:5,y:5,r:10,id:'R-003'}], backgroundColor: '#E24B4A' },
+        { label: 'Medio', data: [{x:3,y:4,r:8,id:'R-004'},{x:3,y:3,r:8,id:'R-005'},{x:4,y:3,r:8,id:'R-006'},{x:3,y:4,r:8,id:'R-007'},{x:2,y:4,r:8,id:'R-008'}], backgroundColor: '#EF9F27' },
+        { label: 'Bajo', data: [{x:2,y:2,r:6},{x:1,y:3,r:6},{x:2,y:1,r:6},{x:1,y:2,r:6},{x:3,y:1,r:6}], backgroundColor: '#1D9E75' } ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } }, tooltip: { callbacks: { label: c => c.raw.id ? `${c.raw.id} (P:${c.raw.x} I:${c.raw.y})` : `P:${c.raw.x} I:${c.raw.y}` } } },
+        scales: { x: { min: 0, max: 6, ticks: { stepSize: 1, font: { size: 10 }, callback: v => ['', 'muy baja','baja','media','alta','muy alta'][v] || '' }, title: { display: true, text: 'Probabilidad', font: { size: 11 } }, grid: { color: 'rgba(128,128,128,0.1)' } },
+                  y: { min: 0, max: 6, ticks: { stepSize: 1, font: { size: 10 }, callback: v => ['', 'mínimo','menor','moderado','mayor','crítico'][v] || '' }, title: { display: true, text: 'Impacto', font: { size: 11 } }, grid: { color: 'rgba(128,128,128,0.1)' } } } }
+    });
+  }
+  if (view === 'improve') {
+    destroy('improveFunnel');
+    charts.improveFunnel = new Chart(document.getElementById('improveFunnel'), {
+      type: 'bar',
+      data: { labels: ['Ideas', 'En análisis', 'Aprobadas', 'En ejecución', 'Implementadas', 'Sostenidas'], datasets: [{ label: 'Iniciativas', data: [24, 14, 11, 8, 5, 3], backgroundColor: ['#85B7EB','#85B7EB','#378ADD','#185FA5','#1D9E75','#0F6E56'], borderRadius: 4 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { font: { size: 10 } }, grid: { color: 'rgba(128,128,128,0.1)' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } }
+    });
+  }
+}
+
+renderCharts('exec');
+</script>
+</body>
+</html>
